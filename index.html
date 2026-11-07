@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Love Letter 💌</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#ffe4ee; --bg2:#ffd1e3; --card:#fffafc; --ink:#7a3b55; --soft:#b86b8c;
+  --accent:#ff8fb8; --accent2:#ff6fa5; --shadow:rgba(255,111,165,.25);
+  --env:#ffc2d9; --env-dark:#ffa9c9; --paper:#fff;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg1:#2b1620; --bg2:#3a1c2b; --card:#43212f; --ink:#ffe0ec; --soft:#f3a9c7;
+    --accent:#ff8fb8; --accent2:#ff6fa5; --shadow:rgba(0,0,0,.4);
+    --env:#d9799f; --env-dark:#c4668c; --paper:#fff4f8;
+  }
+}
+:root[data-theme="dark"]{
+  --bg1:#2b1620; --bg2:#3a1c2b; --card:#43212f; --ink:#ffe0ec; --soft:#f3a9c7;
+  --shadow:rgba(0,0,0,.4); --env:#d9799f; --env-dark:#c4668c; --paper:#fff4f8;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{
+  margin:0;height:100%;overflow:hidden;
+  font-family:'Mali','Sarabun','Noto Sans Thai',system-ui,sans-serif;
+  color:var(--ink);
+  background:linear-gradient(160deg,var(--bg1),var(--bg2));
+  background-color:var(--bg1);
+  display:flex;align-items:center;justify-content:center;
+}
+.stage{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;text-align:center;opacity:0;pointer-events:none;
+  transform:translateY(14px) scale(.98);transition:opacity .6s ease,transform .6s ease;
+}
+.stage.active{opacity:1;pointer-events:auto;transform:none}
+h1,h2,p{margin:0}
+.hint{font-size:clamp(17px,4.6vw,22px);line-height:1.6;max-width:22em;margin-bottom:28px;color:var(--ink)}
+.hint small{display:block;color:var(--soft);font-size:.8em;margin-top:6px}
+
+/* Envelope */
+.envelope{
+  position:relative;width:min(78vw,280px);aspect-ratio:7/5;cursor:pointer;
+  animation:bob 2.6s ease-in-out infinite;border:0;background:none;padding:0;
+  filter:drop-shadow(0 14px 18px var(--shadow));
+  -webkit-tap-highlight-color:transparent;
+}
+.envelope.open{animation:none}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-10px) rotate(1.5deg)}}
+.env-back{position:absolute;inset:0;background:var(--env-dark);border-radius:14px}
+.letter{
+  position:absolute;left:10%;right:10%;top:8%;height:80%;background:var(--paper);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:34px;
+  transition:transform .9s cubic-bezier(.3,1.3,.5,1) .35s;
+}
+.letter::before{content:"";position:absolute;left:16%;right:16%;top:22%;height:3px;border-radius:3px;background:var(--env);box-shadow:0 12px 0 var(--env),0 24px 0 var(--env)}
+.letter span{position:relative;z-index:1;margin-top:46%}
+.env-front{
+  position:absolute;inset:0;border-radius:14px;
+  background:
+    linear-gradient(to top right,transparent 49.5%,var(--env) 50%) left/50% 100% no-repeat,
+    linear-gradient(to top left,transparent 49.5%,var(--env) 50%) right/50% 100% no-repeat;
+}
+.env-bottom{position:absolute;left:0;right:0;bottom:0;height:62%;background:var(--env);border-radius:0 0 14px 14px;clip-path:polygon(0 100%,100% 100%,100% 0,50% 58%,0 0)}
+.flap{
+  position:absolute;left:0;right:0;top:0;height:58%;background:var(--env);
+  clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;
+  transition:transform .6s ease,z-index 0s .3s;z-index:3;
+}
+.seal{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:30px;z-index:4;transition:opacity .3s}
+.envelope.open .flap{transform:rotateX(180deg);z-index:0}
+.envelope.open .seal{opacity:0}
+.envelope.open .letter{transform:translateY(-62%)}
+
+/* Choices */
+.choices{display:flex;flex-direction:column;gap:14px;width:min(86vw,320px)}
+.btn{
+  font-family:inherit;font-size:clamp(17px,4.6vw,20px);color:#fff;border:0;cursor:pointer;
+  padding:16px 22px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  box-shadow:0 8px 18px var(--shadow);transition:transform .2s ease,box-shadow .2s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn:hover{transform:translateY(-3px) scale(1.03)}
+.btn:active{transform:scale(.96)}
+.card{
+  background:var(--card);border-radius:28px;padding:32px 26px;width:min(90vw,440px);
+  box-shadow:0 16px 36px var(--shadow);margin-bottom:24px;
+}
+.card .q{font-size:clamp(20px,5.4vw,26px);line-height:1.5}
+.pill{display:inline-block;font-size:13px;color:var(--soft);background:var(--bg1);padding:4px 14px;border-radius:999px;margin-bottom:14px}
+
+/* Message */
+.msg{
+  font-size:clamp(18px,5vw,23px);line-height:1.85;min-height:9em;text-align:left;
+  white-space:pre-wrap;word-break:break-word;
+}
+.cursor{display:inline-block;width:2px;height:1.1em;background:var(--accent2);vertical-align:-.15em;margin-left:2px;animation:blink .8s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.big{font-size:44px;margin-bottom:10px;animation:bob 2.4s ease-in-out infinite}
+.again{margin-top:4px;opacity:0;transition:opacity .8s}
+.again.show{opacity:1}
+.again button{background:none;border:0;color:var(--soft);font-family:inherit;font-size:15px;text-decoration:underline;cursor:pointer;padding:8px}
+
+/* Floating hearts */
+#hearts{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:1}
+.heart{
+  position:absolute;bottom:-40px;will-change:transform,opacity;opacity:0;
+  animation:floatUp linear forwards;
+}
+@keyframes floatUp{
+  0%{transform:translate(0,0) scale(.6);opacity:0}
+  10%{opacity:.9}
+  90%{opacity:.8}
+  100%{transform:translate(var(--dx),-112vh) scale(1.1) rotate(var(--rot));opacity:0}
+}
+.stage{z-index:2}
+.dots{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:0;right:0;display:flex;justify-content:center;gap:8px;z-index:3}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:.3;transition:.3s}
+.dots i.on{opacity:1;transform:scale(1.3)}
+.again{display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+.again.show{pointer-events:auto}
+.again button.btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:clamp(17px,4.6vw,20px);text-decoration:none;padding:14px 26px}
+.card.tight{padding:20px 22px;margin-bottom:16px}
+.arena{position:relative;width:min(92vw,440px);height:min(48vh,360px);border-radius:28px;background:var(--card);box-shadow:0 16px 36px var(--shadow);overflow:hidden;margin-bottom:12px}
+.catch{position:absolute;bottom:-50px;border:0;background:none;font-size:42px;cursor:pointer;padding:8px;animation:rise linear forwards;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+@keyframes rise{from{bottom:-50px}to{bottom:105%}}
+.catch.got{animation-play-state:paused;transform:scale(1.8);opacity:0;transition:transform .3s,opacity .3s;pointer-events:none}
+.counter{font-size:20px;color:var(--accent2);font-weight:600}
+.reasons{display:flex;flex-direction:column;gap:12px;width:min(90vw,380px);margin-bottom:18px}
+.reason{font-family:inherit;font-size:clamp(16px,4.4vw,19px);line-height:1.5;color:var(--ink);background:var(--card);border:2px dashed var(--accent);border-radius:20px;padding:16px;cursor:pointer;box-shadow:0 8px 18px var(--shadow);transition:transform .2s}
+.reason:active{transform:scale(.97)}
+.reason.shown{border-style:solid;background:linear-gradient(135deg,var(--card),var(--bg1))}
+.cert{border:3px double var(--accent);border-radius:20px;padding:22px 14px}
+.cert .big{margin-bottom:6px}
+.cert .t1{color:var(--soft);font-size:16px}
+.cert .t2{font-size:clamp(22px,6vw,28px);line-height:1.4;margin:8px 0;color:var(--accent2);font-weight:600}
+.cert .t3{font-size:15px;line-height:1.7}
+@media (prefers-reduced-motion:reduce){
+  .envelope,.big{animation:none}
+}
+</style>
+</head>
+<body>
+
+<div id="hearts" aria-hidden="true"></div>
+
+<!-- ด่านที่ 1 -->
+<section class="stage active" id="s1">
+  <p class="hint">มีกล่องความลับมาให้เปิด 💌<small>ดูให้จบก่อนเลือกนะ!</small></p>
+  <button class="envelope" id="env" aria-label="เปิดกล่องจดหมาย">
+    <div class="env-back"></div>
+    <div class="letter"><span>💗</span></div>
+    <div class="env-bottom"></div>
+    <div class="flap"></div>
+    <div class="seal">💗</div>
+  </button>
+</section>
+
+<!-- ด่านที่ 1.5 -->
+<section class="stage" id="s15">
+  <div class="card">
+    <div class="pill">ด่านที่ 1.5</div>
+    <p class="q">สรุปแล้ว ชอบเราไหม?<br>ตอบมาดีๆ นะ 😤</p>
+  </div>
+  <div class="choices">
+    <button class="btn" data-next>ชอบที่สุด 🥰</button>
+    <button class="btn" data-next>ชอบมากๆ 💖</button>
+  </div>
+</section>
+
+<!-- ด่านที่ 2 -->
+<section class="stage" id="s2">
+  <div class="card">
+    <div class="big">🧸</div>
+    <p class="msg" id="msg"></p>
+  </div>
+  <div class="again" id="again"><button class="btn" id="next2">ไปด่านต่อไป ➡️</button><button id="replay">เล่นอีกรอบ 🔁</button></div>
+</section>
+
+<!-- ด่านที่ 3: เกมจับหัวใจ -->
+<section class="stage" id="s3">
+  <div class="card tight">
+    <div class="pill">ด่านที่ 3</div>
+    <p class="q" style="font-size:clamp(19px,5vw,24px)">จับหัวใจให้ครบ 5 ดวง!</p>
+    <p class="counter" id="count">0/5</p>
+  </div>
+  <div class="arena" id="arena"></div>
+  <p class="hint" id="gmsg" style="margin:0;font-size:16px">แตะหัวใจที่ลอยขึ้นมาเลย!</p>
+</section>
+
+<!-- ด่านที่ 4: เหตุผลที่ชอบ -->
+<section class="stage" id="s4">
+  <div class="card tight">
+    <div class="pill">ด่านที่ 4</div>
+    <p class="q" style="font-size:clamp(19px,5vw,24px)">เหตุผลที่ชอบเธอ 💭<br><small style="color:var(--soft);font-size:.7em">แตะเปิดให้ครบทั้ง 3 ข้อ</small></p>
+  </div>
+  <div class="reasons">
+    <button class="reason"></button>
+    <button class="reason"></button>
+    <button class="reason"></button>
+  </div>
+  <div class="again" id="again4"><button class="btn" id="next4">ไปด่านสุดท้าย ➡️</button></div>
+</section>
+
+<!-- ด่านที่ 5: ด่านสุดท้าย -->
+<section class="stage" id="s5">
+  <div class="card">
+    <div class="cert">
+      <div class="big">🏆</div>
+      <p class="t1">ขอมอบรางวัลให้</p>
+      <p class="t2">คนน่ารักที่สุดในใจเรา</p>
+      <p class="t3">ผู้ผ่านครบทุกด่านอย่างสวยงาม<br>รักนะ 💗 (ล็อกไว้ตลอดไปเลย 🔒)</p>
+    </div>
+  </div>
+  <button class="btn" id="replay2">เล่นใหม่ตั้งแต่ต้น 🔁</button>
+</section>
+
+<div class="dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+
+<script>
+(function(){
+  var stages = ['s1','s15','s2','s3','s4','s5'].map(function(id){return document.getElementById(id)});
+  var dots = document.querySelectorAll('.dots i');
+  var env = document.getElementById('env');
+  var heartsBox = document.getElementById('hearts');
+  var msgEl = document.getElementById('msg');
+  var again = document.getElementById('again');
+  var FULL = 'รู้แหละว่าต้องเลือกช้อยส์นี้ 555 โดนล็อกคำตอบไว้หมดแล้วไงล่ะ! ขอบคุณที่กดเข้ามาเล่นนะ ขอบคุณที่เข้ามาเป็นความสุขและรอยยิ้มของเราในทุกๆ วันนะค้าบปมส 🧸✨';
+  var current = 0, typeTimer = null, heartTimer = null, busy = false;
+
+  function show(i){
+    stages.forEach(function(s,k){ s.classList.toggle('active', k===i); });
+    dots.forEach(function(d,k){ d.classList.toggle('on', k===i); });
+    current = i;
+    if(i!==2 && i!==5) clearInterval(heartTimer);
+    if(i===3) startGame(); else stopGame();
+    if(i===4) resetCards();
+    if(i===5){ burst(30); clearInterval(heartTimer); heartTimer = setInterval(spawnHeart, 300); }
+  }
+
+  // ด่านที่ 1: เปิดกล่อง
+  env.addEventListener('click', function(){
+    if(busy) return; busy = true;
+    env.classList.add('open');
+    burst(8);
+    setTimeout(function(){ show(1); busy = false; }, 1700);
+  });
+
+  // ด่านที่ 1.5: ทุกปุ่มไปต่อ
+  document.querySelectorAll('[data-next]').forEach(function(b){
+    b.addEventListener('click', function(){
+      burst(6);
+      setTimeout(function(){ show(2); startStage2(); }, 350);
+    });
+  });
+
+  // ด่านที่ 2: พิมพ์ข้อความ + หัวใจลอย
+  function chars(str){
+    if(window.Intl && Intl.Segmenter){
+      return Array.from(new Intl.Segmenter('th',{granularity:'grapheme'}).segment(str), function(s){return s.segment});
+    }
+    return Array.from(str);
+  }
+  function startStage2(){
+    clearInterval(typeTimer); clearInterval(heartTimer);
+    again.classList.remove('show');
+    msgEl.textContent = '';
+    var arr = chars(FULL), i = 0;
+    var cur = document.createElement('span'); cur.className = 'cursor';
+    msgEl.appendChild(cur);
+    setTimeout(function(){
+      typeTimer = setInterval(function(){
+        if(i >= arr.length){
+          clearInterval(typeTimer);
+          setTimeout(function(){ cur.remove(); again.classList.add('show'); }, 900);
+          return;
+        }
+        cur.insertAdjacentText('beforebegin', arr[i++]);
+      }, 70);
+    }, 600);
+    burst(24);
+    heartTimer = setInterval(function(){ spawnHeart(); }, 380);
+  }
+
+  var HEARTS = ['💗','💖','💕','💓','🩷','💘'];
+  function spawnHeart(){
+    var h = document.createElement('span');
+    h.className = 'heart';
+    h.textContent = HEARTS[Math.floor(Math.random()*HEARTS.length)];
+    var size = 14 + Math.random()*26;
+    h.style.left = (Math.random()*100) + 'vw';
+    h.style.fontSize = size + 'px';
+    h.style.setProperty('--dx', (Math.random()*120-60) + 'px');
+    h.style.setProperty('--rot', (Math.random()*50-25) + 'deg');
+    var dur = 5 + Math.random()*5;
+    h.style.animationDuration = dur + 's';
+    heartsBox.appendChild(h);
+    setTimeout(function(){ h.remove(); }, dur*1000 + 200);
+  }
+  function burst(n){
+    for(var k=0;k<n;k++) setTimeout(spawnHeart, k*90);
+  }
+
+  document.getElementById('next2').addEventListener('click', function(){ show(3); });
+
+  // ด่านที่ 3: เกมจับหัวใจ
+  var arena = document.getElementById('arena'), countEl = document.getElementById('count'), gmsg = document.getElementById('gmsg');
+  var gameTimer = null, caught = 0, GOAL = 5;
+  function startGame(){
+    stopGame(); caught = 0;
+    countEl.textContent = '0/' + GOAL;
+    gmsg.textContent = 'แตะหัวใจที่ลอยขึ้นมาเลย!';
+    arena.innerHTML = '';
+    gameTimer = setInterval(spawnCatch, 600);
+    spawnCatch();
+  }
+  function stopGame(){ clearInterval(gameTimer); }
+  function spawnCatch(){
+    var b = document.createElement('button');
+    b.className = 'catch';
+    b.textContent = HEARTS[Math.floor(Math.random()*HEARTS.length)];
+    b.style.left = (Math.random()*78 + 4) + '%';
+    b.style.animationDuration = (3 + Math.random()*2.2) + 's';
+    b.addEventListener('pointerdown', function(){
+      if(caught >= GOAL || b.classList.contains('got')) return;
+      b.classList.add('got'); caught++;
+      countEl.textContent = caught + '/' + GOAL;
+      if(caught >= GOAL){
+        stopGame();
+        gmsg.textContent = 'ผ่านด่านแล้ว! เก่งมากเลย 🎉';
+        burst(14);
+        setTimeout(function(){ if(current === 3) show(4); }, 1300);
+      }
+    });
+    b.addEventListener('animationend', function(){ b.remove(); });
+    arena.appendChild(b);
+  }
+
+  // ด่านที่ 4: เหตุผลที่ชอบ
+  var REASONS = [
+    '1️⃣ ยิ้มทีไร ใจเราละลายทุกที 🫠',
+    '2️⃣ อยู่ด้วยกันแล้วสบายใจที่สุดเลย ☁️',
+    '3️⃣ ทำให้วันธรรมดากลายเป็นวันพิเศษได้ ✨'
+  ];
+  var cards = document.querySelectorAll('.reason'), revealed = 0, again4 = document.getElementById('again4');
+  function resetCards(){
+    revealed = 0;
+    again4.classList.remove('show');
+    cards.forEach(function(c,k){ c.classList.remove('shown'); c.textContent = 'แตะเพื่อเปิดเหตุผลที่ ' + (k+1) + ' 🔒'; });
+  }
+  cards.forEach(function(c,k){
+    c.addEventListener('click', function(){
+      if(c.classList.contains('shown')) return;
+      c.classList.add('shown'); c.textContent = REASONS[k];
+      burst(5); revealed++;
+      if(revealed === cards.length) again4.classList.add('show');
+    });
+  });
+  document.getElementById('next4').addEventListener('click', function(){ show(5); });
+  document.getElementById('replay2').addEventListener('click', function(){
+    clearInterval(typeTimer); clearInterval(heartTimer);
+    env.classList.remove('open');
+    show(0);
+  });
+
+  document.getElementById('replay').addEventListener('click', function(){
+    clearInterval(typeTimer); clearInterval(heartTimer);
+    env.classList.remove('open');
+    show(0);
+  });
+})();
+</script>
+</body>
+</html>
